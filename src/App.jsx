@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import Layout from './components/Layout/Layout';
 import Routes from './routes';
+import './App.css';
 
 class App extends Component {
   render() {
     return (
-      <Layout>
-        <Routes/>
-      </Layout>
+      <Routes isLoggedIn={true} />
     );
   }
 }
