@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React,{Component,Fragment} from 'react';
 import Courses from '../Courses/Courses';
 import CategoriesList from '../../json/categories.json';
 import CoursesList from '../../json/courses.json';
@@ -6,6 +6,8 @@ import CoursesList from '../../json/courses.json';
 export default class Categories extends Component {
   state = {
     categories: [],
+    categoryId: '',
+    showCourses: false,
     courses: []
   }
 
@@ -17,18 +19,23 @@ export default class Categories extends Component {
 
   handleCoursesFilter = (e) => {
     this.setState({
-      courses: CoursesList.filter(course => course.Categories.toString() === e.target.id)
+      courses: CoursesList.filter(course => course.Categories.toString() === e.target.id),
+      categoryId: e.target.id,
+      showCourses: !this.state.showCourses
     });
   }
 
   render() {
+    const { categories, categoryId, courses, showCourses } = this.state;
     return(
       <div>
         <ul>
-          {this.state.categories.map(({ Id,Name,Verticals,State },index) => 
-            <li key={index} id={Id} onClick={this.handleCoursesFilter}>{Name}</li>
-          )}
-          <Courses list={this.state.courses} />
+          {categories.map(({ Id,Name,Verticals,State },index) => 
+            <Fragment key={index}>
+              <li id={Id} onClick={this.handleCoursesFilter}>{Name}</li>
+              {(showCourses && categoryId.toString() === Id.toString()) && <Courses list={courses} />}
+            </Fragment>
+         )}
         </ul>
       </div>
     );
