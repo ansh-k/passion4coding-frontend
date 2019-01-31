@@ -41,7 +41,7 @@ export default class Categories extends Component {
                       { categoryId.toString() === Id.toString() && <Courses list={courses} /> }
                     </div>
                 </li>
-            )}
+              )}
             </ul>
           </div>
         </div>

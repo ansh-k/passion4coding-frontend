@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import axios from 'axios';
 
 export default class Login extends Component {
 
@@ -7,10 +8,20 @@ export default class Login extends Component {
     password: ''
   }
 
-  handleLogin = (e) => {
-    const email = this.state.email;
-    const password = this.state.password;
-    // this.props.login({ email, password, isLoggedIn })
+  handleLogin = async (e) => {
+    const obj = { 
+      email: this.state.email,
+      password: this.state.password
+    }
+    try {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/login?email=${obj.email}&password=${obj.password}`);
+      if(data.message === "Login successful!" && data.token)
+        window.localStorage.setItem('token', data.token);
+        window.location.assign('/Dashboard');
+      }
+      catch (err) {
+        console.log(err);
+      }
   }
 
   render(){
@@ -25,7 +36,7 @@ export default class Login extends Component {
                 <input type="email" onChange={(e) => this.setState({email: e.target.value})} className="form-control" placeholder="Email Address" />
               </div>
               <div className="form-group">
-                <input type="password" onChange={(e) => this.setState({email: e.target.value})} className="form-control" ref="password" placeholder="Password" />
+                <input type="password" onChange={(e) => this.setState({password: e.target.value})} className="form-control" ref="password" placeholder="Password" />
               </div>
               <div className="form-group">
                 <button className="btn btn-lg btn-block btn-primary" onClick={this.handleLogin}>Log In</button>              

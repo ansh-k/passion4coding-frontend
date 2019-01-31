@@ -1,18 +1,33 @@
 import React,{Component} from 'react';
+import axios from 'axios';
 
 export default class Signup extends Component {
 
   state = {
     name: '',
     email: '',
-    password: ''
+    password: '',
+    message: ''
   }
 
-  handleSignup = (e) => {
-    const name = this.state.name;
-    const email = this.state.email;
-    const password = this.state.password;
-    // this.props.signup({ email, password, isLoggedIn })
+  handleSignup = async (e) => {
+    const obj = { 
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password
+    };
+    try {
+    const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/signup?email=${obj.email}&name=${obj.name}&password=${obj.password}`);
+    
+    this.setState({ message: data.message });
+    
+    if(data.message === "signup successful!" && data.token)
+      window.localStorage.setItem('token', data.token);
+      window.location.assign('/Dashboard');
+    }
+    catch (err) {
+      console.log(err);
+    }
   }
 
   render(){
@@ -23,6 +38,9 @@ export default class Signup extends Component {
             <div className="col-xl-5 col-lg-6 col-md-7 signup-form">
               <h1 className="heading">Create Account</h1>
               <hr/>
+              {this.state.message && <div class="alert alert-success">
+                <strong>Success!</strong> Indicates a successful or positive action.
+              </div>}
               <div className="form-group">
                 <input type="text" onChange={(e) => this.setState({name: e.target.value})} className="form-control" placeholder="Your Name" />
               </div>
