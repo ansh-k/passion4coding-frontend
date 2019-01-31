@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import axios from 'axios';
+import api from '../../utility/query';
 
 export default class Signup extends Component {
 
@@ -17,7 +17,7 @@ export default class Signup extends Component {
       password: this.state.password
     };
     try {
-    const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/signup?email=${obj.email}&name=${obj.name}&password=${obj.password}`);
+    const { data } = await api.create(`/signup?email=${obj.email}&name=${obj.name}&password=${obj.password}`);
     
     this.setState({ message: data.message });
     

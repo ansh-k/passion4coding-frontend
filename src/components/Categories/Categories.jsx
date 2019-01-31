@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import Courses from '../Courses/Courses';
-import CategoriesList from '../../json/categories.json';
+import api from '../../utility/query';
 import CoursesList from '../../json/courses.json';
 
 export default class Categories extends Component {
@@ -10,16 +10,18 @@ export default class Categories extends Component {
     courses: []
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { data: { vertical_categories } } = await api.get(`/verticals/${this.props.match.params.id}`);
     this.setState({
-      categories: CategoriesList.filter(category => category.Verticals.toString() === this.props.match.params.id)
+      categories: vertical_categories
     })
   }
 
-  handleCoursesFilter = (e) => {
+  handleCoursesFilter = async (e) => {
+    const { data: { category, category_courses } } = await api.get(`/categories/${e.target.id}`);
     this.setState({
-      courses: CoursesList.filter(course => course.Categories.toString() === e.target.id),
-      categoryId: e.target.id
+      courses: category_courses,
+      categoryId: category.id
     });
   }
 
@@ -30,15 +32,15 @@ export default class Categories extends Component {
         <div className='row'>
           <div className='col-lg-12'>
             <ul className='list-group main-list shadow-lg'>
-              {categories.map(({ Id,Name },index) => 
+              {categories.map(({ id,name },index) => 
                 <li key={index} className='list-group-item'>
                   <div>
                     <h6>
-                      <a id={Id} onClick={this.handleCoursesFilter} data-toggle="collapse" href={`#collapseExample${index}`} role="button" aria-expanded="false" aria-controls={`collapseExample${index}`}>{Name}</a>
+                      <a id={id} onClick={this.handleCoursesFilter} data-toggle="collapse" href={`#collapseExample${index}`} role="button" aria-expanded="false" aria-controls={`collapseExample${index}`}>{name}</a>
                     </h6>
                     </div>
                     <div className="collapse" id={`collapseExample${index}`}>
-                      { categoryId.toString() === Id.toString() && <Courses list={courses} /> }
+                      { categoryId.toString() === id.toString() && <Courses list={courses} /> }
                     </div>
                 </li>
               )}

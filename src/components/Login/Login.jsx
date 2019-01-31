@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import axios from 'axios';
+import api from '../../utility/query';
 
 export default class Login extends Component {
 
@@ -14,7 +14,7 @@ export default class Login extends Component {
       password: this.state.password
     }
     try {
-      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/login?email=${obj.email}&password=${obj.password}`);
+      const { data } = await api.create(`/login?email=${obj.email}&password=${obj.password}`);
       if(data.message === "Login successful!" && data.token)
         window.localStorage.setItem('token', data.token);
         window.location.assign('/Dashboard');
